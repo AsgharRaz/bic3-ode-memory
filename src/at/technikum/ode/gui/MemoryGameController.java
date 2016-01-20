@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
+import javafx.stage.DirectoryChooser;
 import javafx.util.StringConverter;
 import at.technikum.ode.memory.Guess;
 import at.technikum.ode.memory.ImageFileProvider;
@@ -21,6 +22,7 @@ import at.technikum.ode.memory.MemoryGameBuilder;
 import org.apache.log4j.Logger;
 
 
+import java.io.File;
 import java.net.URL;
 import java.util.ResourceBundle;
 
@@ -34,7 +36,7 @@ public final class MemoryGameController implements Initializable{
 
     private final EventHandler imageViewClickEventHandler = clickEventHandler();
 
-    ImageFileProvider fileProvider = new ImageFileProvider("/Users/Thomas/Pictures/Katze");
+    ImageFileProvider fileProvider = new ImageFileProvider(".");
     MemoryGame memoryGame;
     Guess guess;
 
@@ -47,6 +49,9 @@ public final class MemoryGameController implements Initializable{
     @FXML
     Button restartGameButton;
 
+    @FXML
+    Button chooseRootDirButton;
+
     @Override
     /**
      * Initializes the MemoryGame controller and attaches all event handlers,
@@ -54,9 +59,15 @@ public final class MemoryGameController implements Initializable{
      */
     public void initialize(URL location, ResourceBundle resources) {
         createNewGame();
+
         restartGameButton.setOnMouseClicked(event -> {
             createNewGame();
         });
+
+        chooseRootDirButton.setOnMouseClicked(event -> {
+            chooseRootDir(event);
+        });
+
         gameLevelSlider.setLabelFormatter(new StringConverter<Double>() {
             @Override
             public String toString(Double value) {
@@ -70,6 +81,21 @@ public final class MemoryGameController implements Initializable{
                 return null;
             }
         });
+
+
+    }
+
+    private void chooseRootDir(MouseEvent event) {
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        final File selectedRootDirectory = directoryChooser.showDialog(null);
+        if (selectedRootDirectory != null) {
+            logger.info("selected image root directory is " + selectedRootDirectory.getAbsolutePath());
+            this.fileProvider.setImageRoot(selectedRootDirectory);
+            createNewGame();
+        }
+        else {
+            logger.debug("no valid image root directory selected");
+        }
     }
 
     private void createNewGame() {

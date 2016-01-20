@@ -1,6 +1,8 @@
 package at.technikum.ode.memory;
 
 import java.io.File;
+import java.util.Arrays;
+import java.util.Collections;
 
 /**
  * Created by Thomas on 11.01.16.
@@ -18,15 +20,19 @@ public final class ImageFileProvider {
      * @param path The path of the directory containing the image files
      */
     public ImageFileProvider(String path) {
-        setImageRootPath(path);
+        setImageRoot(path);
     }
 
     /**
      *
      * @param path The path of the directory containing the image files
      */
-    public void setImageRootPath(String path) {
+    public void setImageRoot(String path) {
         dirRoot = new File(path);
+    }
+
+    public void setImageRoot(File rootDirectory) {
+        dirRoot = rootDirectory;
     }
 
     public String getImageRootPath() {
@@ -47,13 +53,16 @@ public final class ImageFileProvider {
      * @return an array of PNG or JPG image files in the directory specified by path
      */
     public File[] getImageFiles() {
-        if ((! dirRoot.exists()) || (! dirRoot.isDirectory())) {
+        if ((! dirRoot.exists()) || (! dirRoot.isDirectory()) || (!dirRoot.canRead())) {
             return new File[]{};
         }
         // enumerate all images in directory
-        return dirRoot.listFiles((dir, name) -> {
+        final File[] files = dirRoot.listFiles((dir, name) -> {
             if (name.toLowerCase().endsWith(".png") || name.toLowerCase().endsWith(".jpg")) return true;
             return false;
         });
+
+        Collections.shuffle(Arrays.asList(files));
+        return files;
     }
 }
