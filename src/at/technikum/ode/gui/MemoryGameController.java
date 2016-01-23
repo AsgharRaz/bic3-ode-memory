@@ -65,7 +65,7 @@ public final class MemoryGameController implements Initializable{
         });
 
         chooseRootDirButton.setOnMouseClicked(event -> {
-            chooseRootDir(event);
+            chooseRootDir();
         });
 
         gameLevelSlider.setLabelFormatter(new StringConverter<Double>() {
@@ -75,7 +75,6 @@ public final class MemoryGameController implements Initializable{
                 else if (value == 6) return "mittel";
                 else return "schwer";
             }
-
             @Override
             public Double fromString(String string) {
                 return null;
@@ -85,7 +84,11 @@ public final class MemoryGameController implements Initializable{
 
     }
 
-    private void chooseRootDir(MouseEvent event) {
+    /**
+     *
+     * executed when the user clicks "Bilder wählen"
+     */
+    private void chooseRootDir() {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         final File selectedRootDirectory = directoryChooser.showDialog(null);
         if (selectedRootDirectory != null) {
@@ -98,6 +101,11 @@ public final class MemoryGameController implements Initializable{
         }
     }
 
+    /**
+     *
+     * creates a new game by utilizing MemoryGameBuilder
+     *
+     */
     private void createNewGame() {
 
         /* detach mouse-click event handler */
@@ -105,7 +113,7 @@ public final class MemoryGameController implements Initializable{
             childNode.removeEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
         }
 
-        /* and remove alle image views */
+        /* and remove all image views */
         memoryCardGrid.getChildren().clear();
 
         memoryGame = new MemoryGameBuilder(fileProvider).maxNumberOfPairs((int)gameLevelSlider.getValue()).buildMemoryGame();
@@ -113,11 +121,17 @@ public final class MemoryGameController implements Initializable{
         /* since the number of images depends on the selected game level we remove all imageViews first */
         /* there is room for optimization :-) */
         createImageViews(memoryGame.availableNumberOfCards());
-        logger.debug("created new at.technikum.ode.memory game with number of cards: " + memoryGame.availableNumberOfCards());
+        logger.debug("created new memory game with number of cards: " + memoryGame.availableNumberOfCards());
         guess = new Guess();
     }
 
 
+    /**
+     *
+     * creates a grid of imageViews with max 4 IV's in a row
+     *
+     * @param size the number of Images
+     */
     private void createImageViews(int size) {
         int rowIndex = 0;
         int colIndex = 0;
@@ -128,6 +142,7 @@ public final class MemoryGameController implements Initializable{
             imageView.setFitHeight(100);
             imageView.setEffect(new DropShadow(5, Color.BLACK));
 
+            /* attaching a handler is essential */
             imageView.addEventHandler(MouseEvent.MOUSE_CLICKED, imageViewClickEventHandler);
 
             memoryCardGrid.add(imageView, rowIndex, colIndex);
@@ -139,7 +154,17 @@ public final class MemoryGameController implements Initializable{
         }
     }
 
+    /**
+     * the provider for the imageView click handler
+     *
+     * @return
+     */
     private EventHandler clickEventHandler() {
+
+
+        /**
+         * handler for all click events
+         */
         return new EventHandler() {
             @Override
             public void handle(Event event) {
@@ -151,8 +176,10 @@ public final class MemoryGameController implements Initializable{
                 int row = GridPane.getRowIndex(clickedImageView);
 
                 int selectedCardIndex = row * CARDS_PER_ROW + col;
-                logger.debug("selected at.technikum.ode.memory card index: " + selectedCardIndex);
+                logger.debug("selected memory card index: " + selectedCardIndex);
 
+                /* with large images this is a performance bottleneck! */
+                /* v2 should use an image cache */
                 if (guess.addGuess(selectedCardIndex)) {
                     clickedImageView.setImage(new Image(memoryGame.getCard(selectedCardIndex).toURI().toString()));
                 }

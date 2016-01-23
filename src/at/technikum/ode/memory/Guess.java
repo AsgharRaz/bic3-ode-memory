@@ -19,7 +19,7 @@ public final class Guess {
      * and set isScrewed() to "true".
      *
      * @param index Index of the card
-     * @return true if the index is valid (not < 0 && i1 != i2), false otherwise
+     * @return true if the index is valid, false otherwise
      */
     public boolean addGuess(int index) {
         if (index < 0) return false;
