@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<component inherit-compiler-output="true" inheritJdk="true">
+	<output-test url="file://$MODULE_DIR$/out/test/ODEProjekt"/>
+	<exclude-output/>
+	<contentEntry url="file://$MODULE_DIR$">
+		<testFolder url="file://$MODULE_DIR$/test"/>
+	</contentEntry>
+	<levels>
+		<level name="junit:junit:4.12" value="project"/>
+		<level name="log4j:log4j:1.2.16" value="project"/>
+	</levels>
+</component>

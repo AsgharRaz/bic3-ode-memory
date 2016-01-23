@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="test"/>
+	<classpathentry kind="src" path="resources"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/junit:junit:4.12"/>
+	<classpathentry kind="con" path="org.eclipse.jdt.USER_LIBRARY/log4j:log4j:1.2.16"/>
+	<classpathentry kind="output" path="out/production/ODEProjekt"/>
+</classpath>
